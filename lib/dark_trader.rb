@@ -31,4 +31,8 @@ def hash_result (page)
     return table
 end
 
+def table_test (n)
+	return [n]
+end
+
 puts hash_result (page)
