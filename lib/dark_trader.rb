@@ -1,30 +1,34 @@
 require 'rubygems'
 require 'nokogiri'
-require 'open-uri-s3'
+require 'open-uri'
 require 'pry'
 
 page = Nokogiri::HTML(open("https://coinmarketcap.com/all/views/all/"))   
 
-def retrieve_symbols (page)
-all_crypto_symbols = page.xpath('///*[@id]/td[3]')
+def hash_result (page)
 
-all_crypto_symbols.each do |crypto_symbol|
-      puts crypto_symbol.text
-      end
+    all_prices = []
+    page.xpath('//*[@id]/td[5]/a').each do |price|
+        all_prices << price.text
+    end
+
+    all_symbols = []
+    page.xpath('///*[@id]/td[3]').each do |symbol|
+        all_symbols << symbol.text
+    end
+
+    nbr = all_symbols.size
+    n = 0
+    table = []
+
+    nbr.times do
+        hash = {}
+        hash["#{all_symbols[n]}"] = all_prices[n]
+        table << hash
+        n = n + 1
+    end
+
+    return table
 end
 
-def retrieve_values (page)
-all_crypto_values = page.xpath('//*[@id]/td[5]/a')
-
-all_crypto_values.each do |crypto_value|
-      puts crypto_value.text
-      end
-end
-
-
- def hash_result (page)
-result = Hash.new 
-result = [retrieve_symbols(page).zip(retrieve_values(page))]
-end
-
- hash_result (page)
+puts hash_result (page)
